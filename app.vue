@@ -5,7 +5,9 @@ import { Toaster } from 'vue-sonner';
 
 <template>
   <div>
-    <Toaster />
-    <NuxtPage />
+    <NuxtLayout>
+      <Toaster />
+      <NuxtPage />
+    </NuxtLayout>
   </div>
 </template>

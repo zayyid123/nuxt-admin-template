@@ -6,6 +6,11 @@ import * as zod from 'zod';
 import Button from '~/components/ui/Button.vue';
 import { toast } from 'vue-sonner';
 
+definePageMeta({
+    layout: false,
+});
+
+
 const router = useRouter();
 const isLoading = ref(false);
 const validationSchema = toTypedSchema(
