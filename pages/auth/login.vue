@@ -1,22 +1,38 @@
 <script setup lang="ts">
 import { reactive } from 'vue';
 import { useRouter } from 'vue-router';
+import { useField, useForm } from 'vee-validate';
+import { toTypedSchema } from '@vee-validate/zod';
+import * as zod from 'zod';
 import Button from '~/components/ui/Button.vue';
+import { toast } from 'vue-sonner';
 
 const router = useRouter();
-const state = reactive({
-    email: '',
-    password: '',
+const validationSchema = toTypedSchema(
+    zod.object({
+        email: zod.string().min(1, { message: 'This is required' }).email({ message: 'Must be a valid email' }),
+        password: zod.string().min(1, { message: 'This is required' }).min(8, { message: 'Too short' }),
+    })
+);
+const { handleSubmit, errors } = useForm({
+    validationSchema,
 });
 
-const login = async () => {
+const { value: email } = useField('email');
+const { value: password } = useField('password');
+
+const onSubmit = handleSubmit(values => {
+    // save to local storage
     localStorage.setItem('user', JSON.stringify({
-        email: state.email,
-        password: state.password,
+        email: values.email,
     }));
 
-    router.push('/dashboard');
-};
+    toast.success('Logged in successfully');
+
+    setTimeout(() => {
+        router.push('/dashboard');
+    }, 2000);
+});
 
 </script>
 
@@ -24,18 +40,20 @@ const login = async () => {
     <div class="flex items-center justify-center min-h-screen bg-gray-100 px-3">
         <div class="w-full max-w-md p-8 space-y-6 bg-white rounded shadow-md">
             <h1 class="text-2xl font-bold text-center">Login</h1>
-            <form @submit.prevent="login" class="space-y-4">
+            <form @submit.prevent="onSubmit" class="space-y-4">
                 <div>
                     <label for="email" class="block text-sm font-medium text-gray-700">Email:</label>
-                    <input type="email" v-model="state.email" required
+                    <input type="email" id="email" v-model="email" required
                         class="w-full px-3 py-2 mt-1 border rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" />
+                    <div v-if="errors.email" class="text-red-400 mt-1">{{ errors.email }}</div>
                 </div>
                 <div>
                     <label for="password" class="block text-sm font-medium text-gray-700">Password:</label>
-                    <input type="password" v-model="state.password" required
+                    <input type="password" id="password" v-model="password" required
                         class="w-full px-3 py-2 mt-1 border rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" />
+                    <span class="text-red-400 mt-11">{{ errors.password }}</span>
                 </div>
-                <Button :type="`submit`" :is-full-width="true" :is-disabled="false" >Login</Button>
+                <Button :type="`submit`" :is-full-width="true" :is-disabled="false">Login</Button>
             </form>
         </div>
     </div>
