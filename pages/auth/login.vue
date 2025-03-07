@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { reactive } from 'vue';
 import { useRouter } from 'vue-router';
 import { useField, useForm } from 'vee-validate';
 import { toTypedSchema } from '@vee-validate/zod';
@@ -8,6 +7,7 @@ import Button from '~/components/ui/Button.vue';
 import { toast } from 'vue-sonner';
 
 const router = useRouter();
+const isLoading = ref(false);
 const validationSchema = toTypedSchema(
     zod.object({
         email: zod.string().min(1, { message: 'This is required' }).email({ message: 'Must be a valid email' }),
@@ -22,6 +22,8 @@ const { value: email } = useField('email');
 const { value: password } = useField('password');
 
 const onSubmit = handleSubmit(values => {
+    isLoading.value = true;
+
     // save to local storage
     localStorage.setItem('user', JSON.stringify({
         email: values.email,
@@ -30,6 +32,8 @@ const onSubmit = handleSubmit(values => {
     toast.success('Logged in successfully');
 
     setTimeout(() => {
+        isLoading.value = false;
+
         router.push('/dashboard');
     }, 2000);
 });
@@ -53,7 +57,7 @@ const onSubmit = handleSubmit(values => {
                         class="w-full px-3 py-2 mt-1 border rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" />
                     <span class="text-red-400 mt-11">{{ errors.password }}</span>
                 </div>
-                <Button :type="`submit`" :is-full-width="true" :is-disabled="false">Login</Button>
+                <Button :type="`submit`" :is-full-width="true" :is-loading="isLoading">Login</Button>
             </form>
         </div>
     </div>
