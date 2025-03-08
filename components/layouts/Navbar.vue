@@ -1,14 +1,5 @@
 <script lang="ts" setup>
-defineProps({
-    isOpenSidebar: {
-        type: Boolean,
-        required: true
-    },
-    toggleSidebar: {
-        type: Function as PropType<() => void>,
-        required: true
-    },
-});
+const toggleSidebar = inject<() => void>('toggleSidebar')!;
 </script>
 
 <template>

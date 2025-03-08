@@ -3,17 +3,8 @@ import { Icon } from '#components'
 import ButtonGroupSidebar from './ButtonGroupSidebar.vue';
 import ButtonSidebar from './ButtonSidebar.vue';
 
-defineProps({
-    isOpenSidebar: {
-        type: Boolean,
-        required: true
-    },
-    toggleSidebar: {
-        type: Function as PropType<() => void>,
-        required: true
-    },
-});
-
+const isOpenSidebar = inject<boolean>('isOpenSidebar')!;
+const toggleSidebar = inject<() => void>('toggleSidebar')!;
 </script>
 
 <template>
