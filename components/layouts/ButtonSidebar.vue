@@ -23,7 +23,7 @@ const isActive = computed(() => route.path === props.url);
 const toggleSidebar = inject<() => void>('toggleSidebar')!;
 const { isMobile } = useIsMobile();
 
-const toggleSidebarMobile = (url: string) => {
+const clickButtonSidebarMobile = (url: string) => {
     if (isMobile.value) {
         toggleSidebar();
     }
@@ -33,7 +33,7 @@ const toggleSidebarMobile = (url: string) => {
 </script>
 
 <template>
-    <div class="flex flex-col gap-2" @click="toggleSidebarMobile(url)">
+    <div class="flex flex-col gap-2" @click="clickButtonSidebarMobile(url)">
         <div
             :class="['flex items-center gap-2 p-2 rounded-lg cursor-pointer', isActive ? 'bg-[#27272A]' : 'hover:bg-[#27272A]']">
             <Icon :name="icon" size="20" />
