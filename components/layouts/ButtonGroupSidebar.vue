@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 import { ref } from 'vue';
+import { useRoute } from 'vue-router';
 
-defineProps({
+const props = defineProps({
     name: {
         type: String,
         required: true
@@ -16,6 +17,10 @@ defineProps({
     }
 });
 const isOpenButtonGroup = ref(false);
+const route = useRoute();
+const isActive = computed(() => {
+    return props.groupLinks.some(link => link.url === route.path);
+});
 
 const toggleButtonGroup = () => {
     isOpenButtonGroup.value = !isOpenButtonGroup.value;
@@ -28,7 +33,7 @@ const toggleButtonGroup = () => {
         maxHeight: isOpenButtonGroup ? '1000px' : '36px',
     }" class="overflow-hidden transform transition-all ease-in-out duration-300">
         <div @click="toggleButtonGroup"
-            class="flex items-center justify-between p-2 hover:bg-[#27272A] rounded-lg cursor-pointer">
+            :class="['flex items-center justify-between p-2 rounded-lg cursor-pointer', isActive ? 'bg-[#27272A]' : 'hover:bg-[#27272A]']">
             <div class="flex items-center gap-2">
                 <Icon :name="icon" size="20" />
                 <span class="text-sm font-semibold">{{ name }}</span>
@@ -38,10 +43,10 @@ const toggleButtonGroup = () => {
                 class="transform transition-transform ease-out duration-200" />
         </div>
 
-        <div class="flex flex-col border-l border-[#2d2c2c] pl-2 ml-4">
+        <div class="flex flex-col border-l border-[#2d2c2c] pl-2 ml-4 pt-2 gap-1">
             <div v-for="link in groupLinks" :key="link.name" class="flex flex-col gap-2"
                 @click="$router.push(link.url)">
-                <div class="flex items-center gap-2 p-2 hover:bg-[#27272A] rounded-lg cursor-pointer">
+                <div :class="['flex items-center gap-2 p-2 hover:bg-[#27272A] rounded-lg cursor-pointer', route.path === link.url && 'bg-[#27272A]']">
                     <span class="text-sm font-semibold">{{ link.name }}</span>
                 </div>
             </div>

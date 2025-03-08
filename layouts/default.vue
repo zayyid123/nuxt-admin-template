@@ -2,12 +2,23 @@
 import { ref, provide } from 'vue';
 import Sidebar from '~/components/layouts/Sidebar.vue';
 import Navbar from '~/components/layouts/Navbar.vue';
+import { useIsMobile } from '~/composables/useIsMobile';
 
-const isOpenSidebar = ref(true);
+const { isMobile } = useIsMobile();
+const isOpenSidebar = ref(false);
 
 const toggleSidebar = () => {
     isOpenSidebar.value = !isOpenSidebar.value;
 };
+
+onMounted(() => {
+    if (isMobile.value) {
+        isOpenSidebar.value = false;
+    } else {
+        isOpenSidebar.value = true;
+    }
+});
+
 provide('toggleSidebar', toggleSidebar);
 provide('isOpenSidebar', isOpenSidebar);
 </script>
