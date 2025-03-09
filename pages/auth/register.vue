@@ -5,6 +5,7 @@ import { useRouter } from 'vue-router';
 import Button from '~/components/ui/Button.vue';
 import { useField, useForm } from 'vee-validate';
 import { toast } from 'vue-sonner';
+import { useAuthStore } from '~/stores/auth';
 
 definePageMeta({
     layout: false,
@@ -12,6 +13,7 @@ definePageMeta({
 
 const router = useRouter();
 const isLoading = ref(false);
+const auth = useAuthStore();
 const validationSchema = toTypedSchema(
     zod.object({
         email: zod.string().min(1, { message: 'This is required' }).email({ message: 'Must be a valid email' }),
@@ -30,10 +32,9 @@ const { value: username } = useField('username');
 const onSubmit = handleSubmit(values => {
     isLoading.value = true;
 
-    // save to local storage
-    localStorage.setItem('user', JSON.stringify({
-        email: values.email,
-    }));
+   // save to pinia
+    auth.login({ email: values.email });
+
     toast.success('Register in successfully');
 
     setTimeout(() => {

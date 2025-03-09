@@ -5,14 +5,15 @@ import { toTypedSchema } from '@vee-validate/zod';
 import * as zod from 'zod';
 import Button from '~/components/ui/Button.vue';
 import { toast } from 'vue-sonner';
+import { useAuthStore } from '~/stores/auth';
 
 definePageMeta({
     layout: false,
 });
 
-
 const router = useRouter();
 const isLoading = ref(false);
+const auth = useAuthStore();
 const validationSchema = toTypedSchema(
     zod.object({
         email: zod.string().min(1, { message: 'This is required' }).email({ message: 'Must be a valid email' }),
@@ -29,10 +30,8 @@ const { value: password } = useField('password');
 const onSubmit = handleSubmit(values => {
     isLoading.value = true;
 
-    // save to local storage
-    localStorage.setItem('user', JSON.stringify({
-        email: values.email,
-    }));
+    // save to pinia
+    auth.login({ email: values.email });
 
     toast.success('Logged in successfully');
 
